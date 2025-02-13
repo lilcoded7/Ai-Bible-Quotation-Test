@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: mydbname
+      POSTGRES_USER: mydbuser
+      POSTGRES_PASSWORD: mydbpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    restart: always
+
+  django:
+    build: .
+    command: bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn setup.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - .:/setup
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis  
+    environment:
+      DB_NAME: mydbname
+      DB_USER: mydbuser
+      DB_PASSWORD: mydbpass
+      REDIS_URL: redis://redis:6379/0  
+
+  celery:
+    build: .
+    command: celery -A setup worker --loglevel=info
+    volumes:
+      - .:/setup
+    depends_on:
+      - db
+      - redis
+    environment:
+      DB_NAME: mydbname
+      DB_USER: mydbuser
+      DB_PASSWORD: mydbpass
+      REDIS_URL: redis://redis:6379/0  
+
+  celery-beat:
+    build: .
+    command: celery -A setup beat --loglevel=info
+    volumes:
+      - .:/setup
+    depends_on:
+      - db
+      - redis
+    environment:
+      DB_NAME: mydbname
+      DB_USER: mydbuser
+      DB_PASSWORD: mydbpass
+      REDIS_URL: redis://redis:6379/0  
+
+volumes:
+  postgres_data:
