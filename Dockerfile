@@ -9,11 +9,16 @@ WORKDIR /setup
 
 # Copy requirements.txt and install dependencies
 COPY requirements.txt /setup/
+
+RUN pip install --upgrade setuptools wheel
+
 RUN pip install -r requirements.txt
+
+RUN pip install --upgrade pip
 
 RUN pip install psycopg2-binary
 RUN pip install drf-yasg
-RUN pip install --upgrade celery billiard
+
 
 
 # Install gunicorn
