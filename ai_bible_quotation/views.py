@@ -71,7 +71,6 @@ class LiveSermonQuotationView(APIView):
         Multiple verses: one per line
         If no reference found: return 'None'
         Only return the formatted references, no other text.
-        
         Text to analyze: {text}
         """
 
@@ -92,7 +91,6 @@ class LiveSermonQuotationView(APIView):
                         continue
             
             return references
-            
         except Exception as e:
             logger.error(f"Reference extraction failed: {str(e)}")
             return []
