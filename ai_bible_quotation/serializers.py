@@ -9,7 +9,7 @@ class BibleTranslationSerializer(serializers.ModelSerializer):
 
 
 class LivesermonsSerializer(serializers.Serializer):
-    audio = serializers.FileField(
+    audio_file = serializers.FileField(
         allow_empty_file=False,
         required=True,
         error_messages={
@@ -18,7 +18,7 @@ class LivesermonsSerializer(serializers.Serializer):
         }
     )
 
-    def validate_audio(self, value):
+    def validate_audio_file(self, value):
         if value.size > 10 * 1024 * 1024:  
             raise serializers.ValidationError('Audio file size must be less than 10MB.')
         return value

@@ -1,7 +1,7 @@
 from django.urls import path
-from ai_bible_quotation.views import LiveSermonQuotationView
+from ai_bible_quotation.views import TranscribeAndQuoteView
 
 
 urlpatterns = [
-    path('', LiveSermonQuotationView.as_view(), name='listen_sermon')
+    path('', TranscribeAndQuoteView.as_view(), name='transcribe_and_quote')
 ]
